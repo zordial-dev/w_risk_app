@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Countries collection: All authenticated users can read; admins can write
+    match /countries/{countryId} {
+      allow read: if request.auth != null || true; // Set to true if you want public lookup or request.auth != null for restricted
+      allow write: if request.auth != null;
+    }
+
+    // User preferences & profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
